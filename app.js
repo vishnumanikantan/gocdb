@@ -250,6 +250,11 @@ app.get("/db/territories", isLoggedIn, function(req, res) {
    }); 
 });
 
+app.get("/resetdb", function(req, res) {
+    seedDB();
+    res.redirect("/db");
+});
+
 app.get("/logout", function(req, res) {
     req.logout();
     res.redirect("/");
