@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard: Game Of Clues</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<link rel="icon" type="image/png" href="//www.hestia.live/assets/front/img/hestia-icon.png">
+
+</head>
+<style type="text/css">
+  html {
+	  scroll-behavior: smooth;
+	}
+	/* width */
+	::-webkit-scrollbar {
+	  width: 7px;
+	}
+
+	/* Track */
+	::-webkit-scrollbar-track {
+	  box-shadow: inset 0 0 2px grey; 
+	  border-radius: 20px;
+	}
+	 
+	/* Handle */
+	::-webkit-scrollbar-thumb {
+	  background: silver; 
+	  border-radius: 20px;
+	}
+
+	/* Handle on hover */
+	::-webkit-scrollbar-thumb:hover {
+	  background: grey; 
+	}
+</style>
+<body>
+  <nav class="shadow p-3  navbar navbar-expand-lg">
+                  <a class="navbar-brand">Welcome, <strong><%=currentUser.name%></strong></a>
+                  <button class="navbar-toggler bg-warning" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">Menu&nbsp;<i class="fas fa-bars"></i></button>
+                  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav ml-auto">
+                      <li class="nav-item active ml-lg-5 my-2 my-lg-0">
+                        <a class="nav-link" href="/db"><i class="fas fa-user"></i>&nbsp;Current Players</a>
+                      </li>
+                      <li class="nav-item ml-lg-5 my-2 my-lg-0">
+                        <a class="nav-link" href="/db/kicked"><i class="fas fa-user-slash"></i>&nbsp;Kicked Players</a>
+                      </li>
+                      <li class="nav-item ml-lg-5 my-2 my-lg-0">
+                        <a class="nav-link" href="#"><i class="fas fa-flag"></i>&nbsp;Territories</a>
+                      </li>
+                      <li class="nav-item ml-lg-5 my-2 my-lg-0">
+                        <a class="nav-link" href="#"><i class="fas fa-khanda"></i>&nbsp;Swords</a>
+                      </li>
+                      <li class="nav-item ml-lg-5 my-2 my-lg-0">
+                        <a class="btn btn-danger" href="/logout"><i class="fas fa-sign-out-alt"></i>&nbsp;Logout</a>
+                      </li>
+                    </ul>
+                </div>          
+        </nav>
+        <div class="container m-0 p-2 mb-5">
+          
+
+        <h3 class="h3"><%= type %> Player(s):&nbsp; <%=currentPlayers.length%></h3>
+        <table class="table table-striped table-responsive " style="margin-left: auto;">
+          <thead style="width: 100%;">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">House Name</th>
+              <th scope="col">Level 1 Opponent</th>
+              <th scope="col"><%= type %> Level</th>
+              <th scope="col"><%= type %> Task</th>
+              <th scope="col">Territories Conquered(territory numbers)</th>
+            </tr>
+          </thead>
+          <tbody style="width: 100%;">
+              <% var i=0; %>
+              <% currentPlayers.forEach(function(player){ %>
+              <tr>
+              <th scope="row"><%= ++i; %></th>
+              <td><%= (player.name).charAt(0).toUpperCase() + (player.name).slice(1) %></td>
+              <td><%= (player.opponent.name).charAt(0).toUpperCase() + (player.opponent.name).slice(1) %></td>
+              <td><%= player.level %></td>
+              <td><%= player.task %></td>
+              <td><% (player.territory).forEach(function(ter){ %>
+                    <%= ter.tnum %><br>
+                <% }) %>    
+              </td>
+              </tr>
+              <% }) %>
+              
+          </tbody>
+        </table>
+    
+</div>
+<div class="text-center text-white fixed-bottom  py-3" style="background-color: rgba(48,60,108,1); ">
+            Designed, Developed and Maintained by Team Game Of Clues
+</div>
+</body>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+</html>
