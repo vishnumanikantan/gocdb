@@ -59,7 +59,8 @@ adminCreate();
 
 var levels = [{maxcount: 8, count: 0},{maxcount:4, count: 0},{maxcount: 2, count: 0}];
 var house = ['stark','bolton','mormont','arryn','baelish','targaryen','crakehall','greyjoy','tully','lannister','baratheon','tyrell','swyft','clegane','tarly','martell'];
-var opponent = ['bolton','stark','arryn','mormont','targaryen','baelish','greyjoy','crakehall','lannister','tully','tyrell','baratheon','clegane','swyft','martell','tarly'];
+//var opponent = ['bolton','stark','arryn','mormont','targaryen','baelish','greyjoy','crakehall','lannister','tully','tyrell','baratheon','clegane','swyft','martell','tarly'];
+var opponent = ['baelish','mormont','bolton','lannister','stark','baratheon','greyjoy','crakehall','swyft','arryn','targaryen','clegane','tully','tyrell','martell','tarly'];
 function seedDB(){
     User.deleteMany({}, function(err){
         if (err){
