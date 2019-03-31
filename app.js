@@ -1,3 +1,4 @@
+require("dotenv").config();
 var express =require("express");
 var app = express();
 var bodyParser = require("body-parser");
@@ -8,7 +9,9 @@ var mongoose = require("mongoose");
 var passport    = require("passport");
 var LocalStrategy = require("passport-local");
 var Admin = require("./models/admin.js");
+var flash  = require("connect-flash");
 
+app.use(flash());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
@@ -28,7 +31,8 @@ passport.deserializeUser(Admin.deserializeUser());
 
 app.use(function(req, res, next){
    res.locals.currentUser = req.user;
-   
+   res.locals.error = req.flash("error");
+   res.locals.success = req.flash("success");
    next();
 });
 
@@ -195,6 +199,31 @@ app.get("/:house/currentstat", function(req, res) {
     });
 });
 
+app.get("/setopp", isLoggedIn, function(req, res) {
+   User.find({ingame: true}, function(err, currentPlayers) {
+       if(err || !(currentPlayers)){
+           console.log(err);
+           res.send("No more players or error in db");
+       }else{
+           res.render("setopp", {currentPlayers: currentPlayers});
+       }
+   }); 
+});
+
+app.post("/:id/setopp", function(req, res) {
+   User.findById(req.params.id, function(err, h){
+       if(err || !(h)){
+           console.log(err);
+           res.send("Could not set opponent\n"+err);
+       }else{
+           h.opponent.name=req.body.newopp;
+           h.save();
+           req.flash("success", "Opponent Set Successfully");
+           res.redirect("/setopp");
+           console.log(h);
+       }
+   }); 
+});
 
 
 

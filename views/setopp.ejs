@@ -73,16 +73,17 @@
         <div class="container m-0 p-2 mb-5">
           
 
-        <h3 class="h3"><%= type %> Player(s):&nbsp; <%=currentPlayers.length%></h3>
+        <h3 class="h3">Current Player(s):&nbsp; <%=currentPlayers.length%></h3>
         <table class="table table-striped table-responsive " style="margin-left: auto;">
           <thead style="width: 100%;">
             <tr>
               <th scope="col">#</th>
               <th scope="col">House Name</th>
               <th scope="col">Level 1 Opponent</th>
-              <th scope="col"><%= type %> Level</th>
-              <th scope="col"><%= type %> Task</th>
-              <th scope="col">Territories Conquered(territory numbers)</th>
+              <th scope="col">Current Level</th>
+              <th scope="col">Current Task</th>
+              <th scope="col">Territories Conquered(numbers)</th>
+              <th scope="col">Set Opponent</th>
             </tr>
           </thead>
           <tbody style="width: 100%;">
@@ -99,6 +100,16 @@
                     <%= ter.tnum %><br>
                 <% }) %>    
               </td>
+                <td style="p-2">
+                        <form action="/<%=player._id%>/setopp" method="POST">
+                            <div class="form-group">
+                                <input type="text" style="border-radius: 5px;" name="newopp" class="form-control" id="exampleInputEmail1"  placeholder="Name of new opponent">
+                            </div>
+                            <div class="form-group mt-1">
+                                  <button class="btn btn-success btn-sm"><i class="fas fa-share-square"></i>&nbsp;Submit</button>
+                            </div>
+                        </form>
+                </td>
               </tr>
               <% }) %>
               

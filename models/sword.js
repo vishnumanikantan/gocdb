@@ -6,9 +6,10 @@ var swordSchema = new mongoose.Schema({
         id: {
          type: mongoose.Schema.Types.ObjectId,
          ref: "User"
-      }
+      },
+      house: String
     },
-    count: {type: Number, default: 0}
+    scanned: {type: Boolean, default: false}
     
 });
 
