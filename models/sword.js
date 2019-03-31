@@ -1,15 +1,9 @@
 var mongoose = require("mongoose");
 
 var swordSchema = new mongoose.Schema({
-    sname: String,
-    bearer: {
-        id: {
-         type: mongoose.Schema.Types.ObjectId,
-         ref: "User"
-      },
-      house: String
-    },
-    scanned: {type: Boolean, default: false}
+    snum: Number,
+    bearerhouse: String, 
+    isscanned: {type: Boolean, default: false}
     
 });
 

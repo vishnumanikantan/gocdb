@@ -73,32 +73,30 @@
         <div class="container m-0 p-2 mb-5">
           
 
-        <h3 class="h3"><%= type %> Player(s):&nbsp; <%=currentPlayers.length%></h3>
+        <h3 class="h3">Sword(s) Left:&nbsp; <%=swords.length%></h3>
         <table class="table table-striped table-responsive " style="margin-left: auto;">
           <thead style="width: 100%;">
             <tr>
               <th scope="col">#</th>
-              <th scope="col">House Name</th>
-              <th scope="col">Level 1 Opponent</th>
-              <th scope="col"><%= type %> Level</th>
-              <th scope="col"><%= type %> Task</th>
-              <th scope="col">Territories Conquered(territory numbers)</th>
+              <th scope="col">Sword Number</th>
+              <th scope="col">Scan Status</th>
+              <th scope="col">Sword Bearer</th>
             </tr>
           </thead>
           <tbody style="width: 100%;">
               <% var i=0; %>
-              <% currentPlayers.forEach(function(player){ %>
+              <% swords.forEach(function(sword){ %>
               <tr>
               <th scope="row"><%= ++i; %></th>
-              <td><%= (player.name).charAt(0).toUpperCase() + (player.name).slice(1) %></td>
-              <td><%= (player.opponent.name).charAt(0).toUpperCase() + (player.opponent.name).slice(1) %></td>
-              <td><%= player.level %></td>
-              <td><%= player.task %></td>
-              <td><% (player.territory).forEach(function(ter){ %>
-                    
-                    <%= ter.tnum %><br>
-                <% }) %>    
-              </td>
+              <td><%= sword.snum %></td>
+              <td><%= sword.isscanned %></td>
+              <td>
+                  <% if(sword.bearerhouse){ %>
+                  <%= (sword.bearerhouse).charAt(0).toUpperCase() + (sword.bearerhouse).slice(1) %>
+                  <% }else{  %>
+                  <%= "" %>
+                  <% } %>
+            </td>
               </tr>
               <% }) %>
               

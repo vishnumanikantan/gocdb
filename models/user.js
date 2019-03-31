@@ -15,12 +15,7 @@ var userSchema = new mongoose.Schema({
     },
     count: { type: Number, default: 0},
     ingame: {type: Boolean, default: true},
-    swordscapture: [
-        {
-         type: mongoose.Schema.Types.ObjectId,
-         ref: "Sword"
-      }
-        ]
+    swordscapture: []
     
 });
 

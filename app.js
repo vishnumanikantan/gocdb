@@ -118,6 +118,31 @@ function seedDB(){
     });
 }
 seedDB();
+function swordCreate(){
+    Sword.deleteMany({}, function(err) {
+        if(err){
+            console.log("error in sword db");
+            console.log(err);
+        }else{
+            for(var i=1; i<=9; i++){
+                var sword = new Sword({
+                    snum: i,            
+                });
+                Sword.create(sword, function(err, newSword){
+                    if(err || !newSword){
+                        console.log(err);
+                        console.log("Could not create sword");
+                    }else{
+                        console.log(newSword);
+                        console.log("Sword "+newSword.snum+" created");
+                    }
+                });
+            }
+        }
+    });
+    
+}
+swordCreate();
 
 app.get("/:house/:level/:task/levelcomplete", levelCheck,function(req, res){
     User.findOne({name: req.params.house}, function(err, h) {
@@ -197,6 +222,35 @@ app.get("/:house/currentstat", function(req, res) {
            console.log("Request recd "+ " {success: 'User found', task: "+ h.task-1 + ", level: "+ h.level+", ingame: "+h.ingame+"}");
        }
     });
+});
+
+//Sword Kopp
+app.get("/:house/:snum/sword", function(req, res){
+    Sword.findOne({snum: req.params.snum}, function(err, s){
+        if(err || !s){
+            console.log(err);
+            console.log("No sword found");
+        }else{
+            if(!(s.isscanned)){
+                User.findOne({name: req.params.house}, function(err, h){
+                    if(err || !h){
+                        console.log(err);
+                        console.log("No user found with such a name");
+                    }else{
+                        s.isscanned=true;
+                        s.bearerhouse=h.name;
+                        s.save();
+                        h.swordscapture.push(s);
+                        h.save();
+                        res.json({success: "You captured a flag"});
+                    }
+                });
+            }else{
+                res.json({fail: "Someone already captured this flag"});
+            }
+            
+        }
+    })
 });
 
 app.get("/setopp", isLoggedIn, function(req, res) {
@@ -280,10 +334,23 @@ app.get("/db/territories", isLoggedIn, function(req, res) {
    }); 
 });
 
+app.get("/swords", isLoggedIn, function(req, res){
+    Sword.find({}, function(err, swords){
+        if(err || !swords){
+            console.log(err);
+            console.log("Swords could not be retrieved");
+        }else{
+            res.render("sword",{swords: swords});
+        }
+    });
+});
+
 app.get("/resetdb",isLoggedIn, function(req, res) {
     seedDB();
+    swordCreate();
     res.redirect("/db");
 });
+
 
 app.get("/logout", function(req, res) {
     req.logout();
