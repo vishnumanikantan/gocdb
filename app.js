@@ -37,7 +37,7 @@ app.use(function(req, res, next){
 });
 
 
-//Admin
+//Create Admin
 function adminCreate(){
     var admin = new Admin({
         username: process.env.USERNAME,
@@ -60,6 +60,8 @@ function adminCreate(){
     });
 }
 adminCreate();
+
+//Create houses and set opponents
 
 var levels = [{maxcount: 8, count: 0},{maxcount:4, count: 0},{maxcount: 2, count: 0}];
 var house = ['stark','bolton','mormont','arryn','baelish','targaryen','crakehall','greyjoy','tully','lannister','baratheon','tyrell','swyft','clegane','tarly','martell'];
@@ -118,6 +120,8 @@ function seedDB(){
     });
 }
 seedDB();
+
+//Create Swords
 function swordCreate(){
     Sword.deleteMany({}, function(err) {
         if(err){
@@ -144,6 +148,10 @@ function swordCreate(){
 }
 swordCreate();
 
+
+//Handle Ingame requests
+
+//Level complete request
 app.get("/:house/:level/:task/levelcomplete", levelCheck,function(req, res){
     User.findOne({name: req.params.house}, function(err, h) {
         if(err || !h){
@@ -188,6 +196,7 @@ app.get("/:house/:level/:task/levelcomplete", levelCheck,function(req, res){
     });
 });
 
+//Task complete request
 app.get("/:house/:task/taskcomplete", function(req, res){
     User.findOne({name: req.params.house}, function(err, h) {
         if(err || !h){
@@ -201,6 +210,7 @@ app.get("/:house/:task/taskcomplete", function(req, res){
     });
 });
 
+//Check whether a player is in the game or not
 app.get("/:house/ingame", function(req, res){
     User.findOne({name: req.params.house}, function(err, h){
         if(err || !h){
@@ -212,6 +222,7 @@ app.get("/:house/ingame", function(req, res){
     });
 });
 
+//Send current status of player
 app.get("/:house/currentstat", function(req, res) {
     User.findOne({name: req.params.house}, function(err, h) {
        if(err || !h){
@@ -224,7 +235,7 @@ app.get("/:house/currentstat", function(req, res) {
     });
 });
 
-//Sword Kopp
+//Access Sword
 app.get("/:house/:snum/sword", function(req, res){
     Sword.findOne({snum: req.params.snum}, function(err, s){
         if(err || !s){
@@ -250,67 +261,16 @@ app.get("/:house/:snum/sword", function(req, res){
             }
             
         }
-    })
+    });
 });
-
-app.get("/setopp", isLoggedIn, function(req, res) {
-   User.find({ingame: true}, function(err, currentPlayers) {
-       if(err || !(currentPlayers)){
-           console.log(err);
-           res.send("No more players or error in db");
-       }else{
-           res.render("setopp", {currentPlayers: currentPlayers});
-       }
-   }); 
-});
-
-app.post("/:id/setopp", isLoggedIn,function(req, res) {
-   User.findById(req.params.id, function(err, h){
-       if(err || !(h)){
-           console.log(err);
-           res.send("Could not set opponent\n"+err);
-       }else{
-           h.opponent.name=req.body.newopp;
-           h.save();
-           req.flash("success", "Opponent Set Successfully");
-           res.redirect("/setopp");
-           console.log(h);
-       }
-   }); 
-});
-
-app.get("/kickplayers", isLoggedIn,function(req, res) {
-   User.find({ingame: true}, function(err, currentPlayers) {
-      if(err || !(currentPlayers)){
-          console.log(err);
-          req.flash("error", err.message);
-      } else{
-          res.render("kick", {currentPlayers: currentPlayers});
-      }
-   }); 
-});
-
-app.get("/:house/kick", isLoggedIn, function(req, res) {
-   User.findOne({name: req.params.house}, function(err, h) {
-       if(err || !h){
-           console.log(err);
-           req.flash("error",err.message);
-       }else{
-           h.ingame=false;
-           h.save();
-           req.flash("success", h.name+" kicked");
-           res.redirect("/kickplayers");
-       }
-   }); 
-});
-
-
-
 // Web view for database
+
+//Render login page
 app.get("/", function(req, res) {
    res.render("login"); 
 });
 
+//Handle login request
 app.post("/login", function(req, res){
    Admin.findOne({username: req.body.username}, function(err, Admin){
         if(err || (!Admin)){
@@ -326,6 +286,13 @@ app.post("/login", function(req, res){
         }); 
 });
 
+//Handle logout request
+app.get("/logout", function(req, res) {
+    req.logout();
+    res.redirect("/");
+});
+
+//Render details of current players
 app.get("/db", isLoggedIn,function(req, res) {
     User.find({ingame: true}, function(err, currentPlayers){
         if(err || !(currentPlayers)){
@@ -338,6 +305,7 @@ app.get("/db", isLoggedIn,function(req, res) {
     
 });
 
+//Render details of kicked players
 app.get("/db/kicked", isLoggedIn,function(req, res) {
     User.find({ingame: false}, function(err, kickedPlayers){
         if(err || !(kickedPlayers)){
@@ -350,15 +318,7 @@ app.get("/db/kicked", isLoggedIn,function(req, res) {
     
 });
 
-app.get("/db/territories", isLoggedIn, function(req, res) {
-   Territory.find({}, function(err, territories){
-      if(err || !(territories)){
-          console.log(err);
-          res.send(err);
-      } 
-   }); 
-});
-
+//Render details of swords
 app.get("/swords", isLoggedIn, function(req, res){
     Sword.find({}, function(err, swords){
         if(err || !swords){
@@ -370,6 +330,64 @@ app.get("/swords", isLoggedIn, function(req, res){
     });
 });
 
+//Render page to set opponent
+app.get("/setopp", isLoggedIn, function(req, res) {
+   User.find({ingame: true}, function(err, currentPlayers) {
+       if(err || !(currentPlayers)){
+           console.log(err);
+           res.send("No more players or error in db");
+       }else{
+           res.render("setopp", {currentPlayers: currentPlayers});
+       }
+   }); 
+});
+
+
+//Handle opponent set request
+app.post("/:id/setopp", isLoggedIn,function(req, res) {
+   User.findById(req.params.id, function(err, h){
+       if(err || !(h)){
+           console.log(err);
+           res.send("Could not set opponent\n"+err);
+       }else{
+           h.opponent.name=req.body.newopp;
+           h.save();
+           req.flash("success", "Opponent Set Successfully");
+           res.redirect("/setopp");
+           console.log(h);
+       }
+   }); 
+});
+
+//Render page to kick players
+app.get("/kickplayers", isLoggedIn,function(req, res) {
+   User.find({ingame: true}, function(err, currentPlayers) {
+      if(err || !(currentPlayers)){
+          console.log(err);
+          req.flash("error", err.message);
+      } else{
+          res.render("kick", {currentPlayers: currentPlayers});
+      }
+   }); 
+});
+
+//Handle player kick request
+app.get("/:house/kick", isLoggedIn, function(req, res) {
+   User.findOne({name: req.params.house}, function(err, h) {
+       if(err || !h){
+           console.log(err);
+           req.flash("error",err.message);
+       }else{
+           h.ingame=false;
+           h.save();
+           req.flash("success", h.name+" kicked");
+           res.redirect("/kickplayers");
+       }
+   }); 
+});
+
+
+//Reset Database
 app.get("/resetdb",isLoggedIn, function(req, res) {
     seedDB();
     swordCreate();
@@ -377,10 +395,6 @@ app.get("/resetdb",isLoggedIn, function(req, res) {
 });
 
 
-app.get("/logout", function(req, res) {
-    req.logout();
-    res.redirect("/");
-});
 
 
 
