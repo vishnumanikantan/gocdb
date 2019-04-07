@@ -264,7 +264,7 @@ app.get("/setopp", isLoggedIn, function(req, res) {
    }); 
 });
 
-app.post("/:id/setopp", function(req, res) {
+app.post("/:id/setopp", isLoggedIn,function(req, res) {
    User.findById(req.params.id, function(err, h){
        if(err || !(h)){
            console.log(err);
@@ -275,6 +275,31 @@ app.post("/:id/setopp", function(req, res) {
            req.flash("success", "Opponent Set Successfully");
            res.redirect("/setopp");
            console.log(h);
+       }
+   }); 
+});
+
+app.get("/kickplayers", isLoggedIn,function(req, res) {
+   User.find({ingame: true}, function(err, currentPlayers) {
+      if(err || !(currentPlayers)){
+          console.log(err);
+          req.flash("error", err.message);
+      } else{
+          res.render("kick", {currentPlayers: currentPlayers});
+      }
+   }); 
+});
+
+app.get("/:house/kick", isLoggedIn, function(req, res) {
+   User.findOne({name: req.params.house}, function(err, h) {
+       if(err || !h){
+           console.log(err);
+           req.flash("error",err.message);
+       }else{
+           h.ingame=false;
+           h.save();
+           req.flash("success", h.name+" kicked");
+           res.redirect("/kickplayers");
        }
    }); 
 });
