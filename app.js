@@ -433,6 +433,6 @@ function isLoggedIn(req, res, next){
     }
     
 }
-app.listen(process.env.IP,process.env.PORT, function(){
-    console.log("App has started at 127.0.0.1:1337");
+app.listen(process.env.PORT,process.env.IP, function(){
+    console.log("App has started at "+process.env.PORT+":"+process.env.IP);
 });
