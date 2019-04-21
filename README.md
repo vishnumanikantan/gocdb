@@ -8,6 +8,9 @@ Game Of Clues Online Database and Web View
 
 
 A demo of the application can be found here:
+
 Username: Hestia'19
+
 Password: WinterIsHere
+
 URL: https://gameofclues.herokuapp.com
